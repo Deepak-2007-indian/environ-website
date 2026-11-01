@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay for ENVIRON</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script></head>
+<body>
+<header><div class="wrap bar"><a class="brand" href="index.html">ENVIRON</a>
+<nav><a href="index.html">Home</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="refund.html">Refunds</a><a href="contact.html">Contact</a></nav></div></header>
+<main><div class="wrap">
+<h1>Complete your payment</h1>
+<div class="card">
+<p>ENVIRON, 1 year of Online and Offline access: <strong>₹99</strong></p>
+<p id="msg" class="muted">Opening the secure Razorpay payment window…</p>
+<p><button id="pay" class="btn" type="button">Pay ₹99</button></p>
+</div>
+<p class="muted">Payments are processed securely by Razorpay. See our <a href="refund.html">Refund Policy</a>. Questions? <a href="contact.html">Contact us</a>.</p>
+</div></main>
+<footer><div class="wrap"><p>© 2026 ENVIRON. Built with Llama.</p></div></footer>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var order = q.get("order") || "";
+  var key = q.get("key") || "";
+  var msg = document.getElementById("msg");
+  var btn = document.getElementById("pay");
+  if (!/^order_[A-Za-z0-9]+$/.test(order) || !/^rzp_(live|test)_[A-Za-z0-9]+$/.test(key)) {
+    msg.textContent = "This payment link is not valid. Please go back to the ENVIRON app and click Pay ₹99 again.";
+    btn.style.display = "none";
+    return;
+  }
+  function openCheckout() {
+    var rzp = new Razorpay({
+      key: key,
+      order_id: order,
+      name: "ENVIRON",
+      description: "1 year access",
+      theme: { color: "#FFD700" },
+      handler: function () {
+        msg.textContent = "Payment successful! Go back to the ENVIRON app and click “I have paid - Unlock”.";
+        btn.style.display = "none";
+      },
+      modal: { ondismiss: function () { msg.textContent = "Payment window closed. Click Pay ₹99 to try again."; } }
+    });
+    rzp.on("payment.failed", function () {
+      msg.textContent = "The payment did not go through. If money was deducted, your bank usually returns it within a few days. You can try again.";
+    });
+    rzp.open();
+  }
+  btn.onclick = openCheckout;
+  openCheckout();
+})();
+</script></body></html>
